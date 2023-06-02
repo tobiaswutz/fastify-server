@@ -1,5 +1,6 @@
 import fastify from "fastify";
 import guard from "fastify-guard";
+import cors from "@fastify/cors";
 import { logger } from "./logger";
 import { applicationRoutes } from "../modules/applications/applications.routes";
 import { usersRoutes } from "../modules/users/users.routes";
@@ -49,6 +50,11 @@ export async function buildServer() {
     errorHandler: (result, request, reply) => {
       return reply.send("you can not do that");
     },
+  });
+
+  // register cors
+  await app.register(cors, {
+    origin: "*",
   });
 
   // register routes
