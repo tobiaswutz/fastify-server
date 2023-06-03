@@ -1,6 +1,6 @@
-import { S } from "drizzle-orm/column.d-8b137277";
-import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
+import { S } from 'drizzle-orm/column.d-8b137277';
+import { z } from 'zod';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 // Create user
 const createUserBodySchema = z.object({
@@ -14,7 +14,7 @@ const createUserBodySchema = z.object({
 export type CreateUserBody = z.infer<typeof createUserBodySchema>;
 
 export const createUserJsonSchema = {
-  body: zodToJsonSchema(createUserBodySchema, "createUserBodySchema"),
+  body: zodToJsonSchema(createUserBodySchema, 'createUserBodySchema'),
 };
 
 // Login
@@ -27,7 +27,7 @@ const loginSchema = z.object({
 export type LoginBody = z.infer<typeof loginSchema>;
 
 export const loginJsonSchema = {
-  body: zodToJsonSchema(loginSchema, "loginSchema"),
+  body: zodToJsonSchema(loginSchema, 'loginSchema'),
 };
 
 // Assign role to user
@@ -40,5 +40,5 @@ const assignRoleToUserBody = z.object({
 export type AssignRoleToUserBody = z.infer<typeof assignRoleToUserBody>;
 
 export const assignRoleTouserJsonSchema = {
-  body: zodToJsonSchema(assignRoleToUserBody, "assignRoleToUserBody"),
+  body: zodToJsonSchema(assignRoleToUserBody, 'assignRoleToUserBody'),
 };

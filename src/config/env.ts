@@ -7,5 +7,6 @@ export const env = zennv({
     PORT: z.number().default(3000),
     HOST: z.string().default("localhost"),
     DATABASE_CONNECTION: z.string(),
+    JWT_SECRET: z.string(),
   }),
 });
