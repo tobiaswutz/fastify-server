@@ -4,9 +4,7 @@ import { createRoleHandler } from "./role.controllers";
 import { PERMISSIONS } from "../../config/permissions";
 
 export async function roleRoutes(app: FastifyInstance) {
-  app.post<{
-    Body: CreateRoleBody;
-  }>(
+  app.post<{ Body: CreateRoleBody }>(
     "/",
     {
       schema: createRoleJsonSchema,

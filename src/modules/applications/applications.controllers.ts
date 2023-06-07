@@ -2,11 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateApplicationBody } from "./applications.schemas";
 import { createApplication, getApplications } from "./applications.services";
 import { createRole } from "../roles/roles.services";
-import {
-  ALL_PERMISSIONS,
-  SYSTEM_ROLES,
-  USER_ROLE_PERMISSIONS,
-} from "../../config/permissions";
+import { ALL_PERMISSIONS, SYSTEM_ROLES, USER_ROLE_PERMISSIONS } from "../../config/permissions";
 
 export async function createApplicationHandler(
   request: FastifyRequest<{
@@ -32,10 +28,7 @@ export async function createApplicationHandler(
     permissions: USER_ROLE_PERMISSIONS,
   });
 
-  const [superAdminRole, applicationUserRole] = await Promise.allSettled([
-    superAdminRolePromise,
-    applicationUserRolePromise,
-  ]);
+  const [superAdminRole, applicationUserRole] = await Promise.allSettled([superAdminRolePromise, applicationUserRolePromise]);
 
   if (superAdminRole.status === "rejected") {
     throw new Error("Error creating super admin role");
@@ -54,4 +47,8 @@ export async function createApplicationHandler(
 
 export async function getApplicationshandler() {
   return getApplications();
+}
+
+export function test(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply): FastifyReply {
+  return reply.send(`Hello ${request.params.id}`);
 }

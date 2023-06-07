@@ -8,5 +8,9 @@ export async function usersRoutes(app: FastifyInstance) {
 
   app.post('/login', { schema: loginJsonSchema }, loginHandler);
 
+  app.get('/me', async (request, reply) => {
+    return reply.send('ok du bist also eingeloggt');
+  });
+
   app.post<{ Body: AssignRoleToUserBody }>( '/roles',{schema: assignRoleTouserJsonSchema,preHandler: [app.guard.scope(PERMISSIONS['users:roles:write'])],},assignRoleTouserHandler);
 }
