@@ -5,7 +5,7 @@ const createPendingFriendshipBodySchema = z.object({ username: z.string(), });
 export type CreatePendingFriendshipBody = z.infer<typeof createPendingFriendshipBodySchema>;
 export const createPendingFriendshipJsonSchema = { body: zodToJsonSchema(createPendingFriendshipBodySchema, 'createPendingFriendshipBodySchema'), };
 
-const acceptPendingFriendshipBodySchema = z.object({ senderId: z.string(), });
+const acceptPendingFriendshipBodySchema = z.object({ pendingFriendshipId: z.string(), });
 export type AcceptPendingFriendshipBody = z.infer<typeof acceptPendingFriendshipBodySchema>;
 export const acceptPendingFriendshipJsonSchema = { body: zodToJsonSchema(acceptPendingFriendshipBodySchema, 'acceptPendingFriendshipBodySchema'), };
 

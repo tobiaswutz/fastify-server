@@ -28,6 +28,8 @@ export const pendingFriendships = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     senderId: uuid("sender_id").references(() => users.id).notNull(),
     receiverId: uuid("receiver_id").references(() => users.id).notNull(),
+    senderUsername: varchar("sender_username", { length: 255 }).notNull(),
+    receiverUsername: varchar("receiver_username", { length: 255 }).notNull(),
   },
 );
 

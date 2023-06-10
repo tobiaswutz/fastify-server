@@ -15,6 +15,20 @@
       "when": 1686430776155,
       "tag": "0001_concerned_frightful_four",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1686436911992,
+      "tag": "0002_jazzy_toro",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1686438293522,
+      "tag": "0003_awesome_human_fly",
+      "breakpoints": false
     }
   ]
 }

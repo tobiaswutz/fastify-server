@@ -1,0 +1,1 @@
+ALTER TABLE "PendingFriendships" ADD COLUMN "receiver_username" varchar(255) NOT NULL;
