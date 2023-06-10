@@ -1,0 +1,285 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "2d44a76d-c09b-4eb1-90cc-ae9a39bffcc4",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "Friendships": {
+      "name": "Friendships",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id1": {
+          "name": "user_id1",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id2": {
+          "name": "user_id2",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Friendships_user_id1_Users_id_fk": {
+          "name": "Friendships_user_id1_Users_id_fk",
+          "tableFrom": "Friendships",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "user_id1"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Friendships_user_id2_Users_id_fk": {
+          "name": "Friendships_user_id2_Users_id_fk",
+          "tableFrom": "Friendships",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "user_id2"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "PendingFriendships": {
+      "name": "PendingFriendships",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "sender_id": {
+          "name": "sender_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver_id": {
+          "name": "receiver_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "PendingFriendships_sender_id_Users_id_fk": {
+          "name": "PendingFriendships_sender_id_Users_id_fk",
+          "tableFrom": "PendingFriendships",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "sender_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "PendingFriendships_receiver_id_Users_id_fk": {
+          "name": "PendingFriendships_receiver_id_Users_id_fk",
+          "tableFrom": "PendingFriendships",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "receiver_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "TresorPermissions": {
+      "name": "TresorPermissions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "safe_id": {
+          "name": "safe_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_owner": {
+          "name": "is_owner",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "can_fill": {
+          "name": "can_fill",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "can_see": {
+          "name": "can_see",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "can_read": {
+          "name": "can_read",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "TresorPermissions_safe_id_Tresors_id_fk": {
+          "name": "TresorPermissions_safe_id_Tresors_id_fk",
+          "tableFrom": "TresorPermissions",
+          "tableTo": "Tresors",
+          "columnsFrom": [
+            "safe_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "TresorPermissions_user_id_Users_id_fk": {
+          "name": "TresorPermissions_user_id_Users_id_fk",
+          "tableFrom": "TresorPermissions",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "Tresors": {
+      "name": "Tresors",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "img_url": {
+          "name": "img_url",
+          "type": "varchar(10000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filled": {
+          "name": "filled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auto_unlock": {
+          "name": "auto_unlock",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locked_until": {
+          "name": "locked_until",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
+    "Users": {
+      "name": "Users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

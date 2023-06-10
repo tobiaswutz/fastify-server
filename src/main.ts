@@ -11,7 +11,6 @@ async function gracefulShutdown({ app }: { app: Awaited<ReturnType<typeof buildS
 async function main() {
   const app = await buildServer();
   await app.listen({ port: env.PORT, host: env.HOST });
-  await migrate(db, { migrationsFolder: "./migrations" });
   const signals = ["SIGINT", "SIGTERM"];
   logger.debug(env, "using env");
 

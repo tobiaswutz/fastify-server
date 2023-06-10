@@ -1,84 +1,37 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AssignRoleToUserBody, CreateUserBody, LoginBody } from './users.schemas';
-import { SYSTEM_ROLES } from '../../config/permissions';
-import { getRoleByName } from '../roles/roles.services';
-import { assignRoleTouser, createUser, getUserByEmail, getUsersByApplication } from './users.services';
+import { CreateUserBody, LoginBody } from './users.schemas';
+import { createUser, getUserByUsername } from './users.services';
 import jwt from 'jsonwebtoken';
-import { P } from 'pino';
 import { logger } from '../../utils/logger';
 import { env } from '../../config/env';
+import argon2 from 'argon2';
 
-export async function createUserHandler(
-  request: FastifyRequest<{
-    Body: CreateUserBody;
-  }>,
-  reply: FastifyReply
-) {
-  const { initialUser, ...data } = request.body;
-
-  const roleName = initialUser ? SYSTEM_ROLES.SUPER_ADMIN : SYSTEM_ROLES.APPLICATION_USER;
-
-  if (roleName === SYSTEM_ROLES.SUPER_ADMIN) {
-    const appUsers = await getUsersByApplication(data.applicationId);
-
-    if (appUsers.length > 0) {
-      return reply.code(400).send({
-        message: 'Application already has super admin user',
-        extensions: {
-          code: 'APPLICATION_ALRADY_SUPER_USER',
-          applicationId: data.applicationId,
-        },
-      });
-    }
-  }
-
-  const role = await getRoleByName({
-    name: roleName,
-    applicationId: data.applicationId,
-  });
-
-  if (!role) {
-    return reply.code(404).send({
-      message: 'Role not found',
-    });
-  }
-
+export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserBody; }>, reply: FastifyReply) {
+  const newUserData = request.body;
   try {
-    const user = await createUser(data);
-
-    // assign a role to the user
-
-    await assignRoleTouser({
-      userId: user.id,
-      roleId: role.id,
-      applicationId: data.applicationId,
+    const user = await createUser(newUserData);
+    console.log(`user mit dem namen ${user.username} wurde erstellt`);
+    reply.code(201).send(user);
+  } catch (e) {
+    logger.error(e, `error creating user`);
+    return reply.code(400).send({
+      message: 'could not create user',
     });
-
-    return user;
-  } catch (e) {}
+  }
 }
 
 export async function loginHandler(request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) {
-  const { applicationId, email, password } = request.body;
-
-  const user = await getUserByEmail({
-    applicationId,
-    email,
-  });
-
-  if (!user) {
-    return reply.code(400).send({
-      message: 'Invalid email or password',
-    });
-  }
+  const { username, password } = request.body;
+  const user = await getUserByUsername(username);
+  if (!user) { return reply.code(400).send({ message: 'Invalid username or password', }); }
+  const isPasswordValid = await argon2.verify(user.password, password);
+  if (!isPasswordValid) { return reply.code(400).send({ message: 'Invalid username or password', }); }
 
   const token = jwt.sign(
     {
       id: user.id,
-      email,
-      applicationId,
-      scopes: user.permissions,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+      username: user.username,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days from now
     },
     env.JWT_SECRET
   );
@@ -86,22 +39,4 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginBody }>,
   return { token };
 }
 
-export async function assignRoleTouserHandler(request: FastifyRequest<{ Body: AssignRoleToUserBody }>, reply: FastifyReply) {
-  const applicationId = request.user.applicationId;
-  const { userId, roleId } = request.body;
 
-  try {
-    const result = await assignRoleTouser({
-      userId,
-      applicationId,
-      roleId,
-    });
-
-    return result;
-  } catch (e) {
-    logger.error(e, `error assigning role to user`);
-    return reply.code(400).send({
-      message: 'could not assign role to user',
-    });
-  }
-}

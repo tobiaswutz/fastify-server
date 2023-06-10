@@ -1,17 +1,15 @@
 import fastify from "fastify";
 import guard from "fastify-guard";
 import cors from "@fastify/cors";
-import { logger } from "./logger";
-import { applicationRoutes } from "../modules/applications/applications.routes";
 import { usersRoutes } from "../modules/users/users.routes";
-import { roleRoutes } from "../modules/roles/role.routes";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
+import { friendships } from "../db/schema";
+import { friendshipRoutes } from "../modules/friendships/friendships.routes";
 
 type User = {
   id: string;
-  applicationId: string;
-  scopes: Array<string>;
+  username: string;
 };
 
 declare module "fastify" {
@@ -21,11 +19,11 @@ declare module "fastify" {
 }
 
 export async function buildServer() {
-  const app = fastify({ logger });
+  const app = fastify({ logger: true });
   app.decorateRequest("user", null);
   app.addHook("onRequest", async function (request, reply) {
 
-    const listOfPublicRoutes = ["/api/users/login", "/api/open"];
+    const listOfPublicRoutes = ["/api/users/register", "/api/users/login"];
 
     const authHeader = request.headers.authorization;
     console.log("request.url", request.url);
@@ -50,8 +48,15 @@ export async function buildServer() {
   await app.register(cors, {
     origin: "*",
   });
-  app.register(applicationRoutes, { prefix: "/api/applications" });
+
+  app.get("/", async function (request, reply) {
+    return { hello: "world" };
+  });
+
+
   app.register(usersRoutes, { prefix: "/api/users" });
-  app.register(roleRoutes, { prefix: "/api/roles" });
+  app.register(friendshipRoutes, { prefix: "/api/friendships" })
+
+
   return app;
 }

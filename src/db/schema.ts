@@ -1,79 +1,58 @@
 import {
   pgTable,
-  primaryKey,
-  text,
-  timestamp,
-  uniqueIndex,
-  uuid,
   varchar,
+  integer,
+  boolean,
+  uuid,
+  timestamp
 } from "drizzle-orm/pg-core";
 
-export const applications = pgTable("applications", {
+export const users = pgTable("Users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 256 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  username: varchar("username", { length: 255 }).notNull(),
+  password: varchar("password", { length: 255 }).notNull(),
 });
 
-export const users = pgTable(
-  "users",
+export const friendships = pgTable(
+  "Friendships",
   {
-    id: uuid("id").defaultRandom().notNull(),
-    email: varchar("email", { length: 256 }).notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
-    applicationId: uuid("applicationId").references(() => applications.id),
-    password: varchar("password", { length: 256 }).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId1: uuid("user_id1").references(() => users.id).notNull(),
+    userId2: uuid("user_id2").references(() => users.id).notNull(),
   },
-  (users) => {
-    return {
-      cpk: primaryKey(users.email, users.applicationId),
-      idIndex: uniqueIndex("users_id_index").on(users.id),
-    };
-  }
 );
 
-export const roles = pgTable(
-  "roles",
+export const pendingFriendships = pgTable(
+  "PendingFriendships",
   {
-    id: uuid("id").defaultRandom().notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
-    applicationId: uuid("applicationId").references(() => applications.id),
-    permissions: text("permissions").array().$type<Array<string>>(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
+    senderId: uuid("sender_id").references(() => users.id).notNull(),
+    receiverId: uuid("receiver_id").references(() => users.id).notNull(),
   },
-  (roles) => {
-    return {
-      cpk: primaryKey(roles.name, roles.applicationId),
-      idIndex: uniqueIndex("roles_id_index").on(roles.id),
-    };
-  }
 );
 
-export const usersToRoles = pgTable(
-  "usersToRoles",
+export const tresors = pgTable(
+  "Tresors",
   {
-    applicationId: uuid("applicationId")
-      .references(() => applications.id)
-      .notNull(),
-
-    roleId: uuid("roledId")
-      .references(() => roles.id)
-      .notNull(),
-
-    userId: uuid("userId")
-      .references(() => users.id)
-      .notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 255 }).notNull(),
+    secret: varchar("secret", { length: 10000 }).notNull(),
+    filled: boolean("filled").notNull(),
+    auto_unlock: boolean("auto_unlock").notNull(),
+    locked_until: timestamp("locked_until").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (usersToRoles) => {
-    return {
-      cpk: primaryKey(
-        usersToRoles.applicationId,
-        usersToRoles.roleId,
-        usersToRoles.userId
-      ),
-    };
-  }
+);
+
+export const tresorPermissions = pgTable(
+  "TresorPermissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    safeId: uuid("safe_id").references(() => tresors.id).notNull(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    is_owner: boolean("is_owner").notNull(),
+    can_fill: boolean("can_fill").notNull(),
+    can_see: boolean("can_see").notNull(),
+    can_open: boolean("can_read").notNull(),
+  },
 );

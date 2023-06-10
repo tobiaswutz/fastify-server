@@ -1,0 +1,1 @@
+ALTER TABLE "Tresors" RENAME COLUMN "img_url" TO "secret";
