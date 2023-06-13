@@ -21,6 +21,9 @@ declare module "fastify" {
 export async function buildServer() {
   const app = fastify({ logger: true });
   app.decorateRequest("user", null);
+  await app.register(cors, {
+    origin: "*",
+  });
   app.addHook("onRequest", async function (request, reply) {
 
     const listOfPublicRoutes = ["/api/users/register", "/api/users/login"];
@@ -45,14 +48,11 @@ export async function buildServer() {
     scopeProperty: "scopes",
     errorHandler: (result, request, reply) => { return reply.send("you can not do that"); },
   });
-  await app.register(cors, {
-    origin: "*",
-  });
+
 
   app.get("/", async function (request, reply) {
     return { hello: "world" };
   });
-
 
   app.register(usersRoutes, { prefix: "/api/users" });
   app.register(friendshipRoutes, { prefix: "/api/friendships" })

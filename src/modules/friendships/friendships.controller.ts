@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { logger } from "../../utils/logger";
 import { AcceptPendingFriendshipBody, CreatePendingFriendshipBody } from "./friendships.schemas";
-import { acceptPendingFriendship, createPendingFriendship, getReceivedFriendshipRequests, getSentFriendshipRequests } from "./friendships.services";
+import { acceptPendingFriendship, createPendingFriendship, getFriends, getReceivedFriendshipRequests, getSentFriendshipRequests } from "./friendships.services";
 
 export async function createPendingFriendshipHandler(request: FastifyRequest<{ Body: CreatePendingFriendshipBody; }>, reply: FastifyReply) {
   const { username } = request.body;
@@ -71,4 +71,22 @@ export async function getSentFriendshipRequestsHandler(request: FastifyRequest, 
       message: 'could not get sentFriendRequests',
     });
   }
+}
+
+export async function getFriendsHandler(request: FastifyRequest, reply: FastifyReply) {
+  const { user } = request;
+
+  console.log('user', user);
+
+  try {
+    const friends = await getFriends(user.id);
+    reply.code(201).send(friends);
+  }
+  catch (e) {
+    logger.error(e, `error getting friends`);
+    return reply.code(400).send({
+      message: 'could not get friends',
+    });
+  }
+
 }

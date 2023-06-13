@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { acceptPendingFriendshipJsonSchema, createPendingFriendshipJsonSchema } from './friendships.schemas';
-import { acceptPendingFriendshipHandler, createPendingFriendshipHandler, getReceivedFriendshipRequestsHandler, getSentFriendshipRequestsHandler } from './friendships.controller';
+import { acceptPendingFriendshipHandler, createPendingFriendshipHandler, getFriendsHandler, getReceivedFriendshipRequestsHandler, getSentFriendshipRequestsHandler } from './friendships.controller';
 
 
 export async function friendshipRoutes(app: FastifyInstance) {
@@ -12,6 +12,6 @@ export async function friendshipRoutes(app: FastifyInstance) {
 
   app.get('/requests-sent', { }, getSentFriendshipRequestsHandler);
   
-
+  app.get('/friends', { }, getFriendsHandler);
 }
 
